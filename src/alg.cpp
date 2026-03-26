@@ -52,15 +52,17 @@ int countPairs2(int *arr, int len, int value) {
 int countPairs3(int *arr, int len, int value) {
     int count = 0;
     for (int i = 0; i < len - 1; ++i) {
-        int curCount = 1;
-        while (i + curCount < len && arr[i + curCount] == arr[i]) {
-            ++curCount;
-        }
         int target = value - arr[i];
-        const int *first = std::lower_bound(arr + i + curCount, arr + len, target);
-        const int *last = std::upper_bound(arr + i + curCount, arr + len, target);
-        count += curCount * (last - first);
-        i += curCount - 1;
+        if (target < arr[i + 1]) {
+            continue;
+        }
+        const int *first = std::lower_bound(arr + i + 1,
+                                            arr + len,
+                                            target);
+        const int *last = std::upper_bound(arr + i + 1,
+                                           arr + len,
+                                           target);
+        count += (last - first);
     }
     return count;
 }
