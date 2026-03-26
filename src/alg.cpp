@@ -1,6 +1,6 @@
 // Copyright 2025 NNTU-CS
-#include <iostream>
 #include <algorithm>
+#include <iostream>
 
 int countPairs1(int *arr, int len, int value) {
     int count = 0;
@@ -56,12 +56,14 @@ int countPairs3(int *arr, int len, int value) {
         if (target < arr[i + 1]) {
             continue;
         }
-        const int *first = std::lower_bound(arr + i + 1,
-                                            arr + len,
-                                            target);
-        const int *last = std::upper_bound(arr + i + 1,
-                                           arr + len,
-                                           target);
+        const int *first = std::lower_bound(arr + i + 1, arr + len, target);
+        if (first == arr + len || *first != target) {
+            continue;
+        }
+        const int *last = first;
+        while (last < arr + len && *last == target) {
+            ++last;
+        }
         count += (last - first);
     }
     return count;
