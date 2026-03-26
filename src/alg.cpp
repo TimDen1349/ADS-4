@@ -51,20 +51,28 @@ int countPairs2(int *arr, int len, int value) {
 
 int countPairs3(int *arr, int len, int value) {
     int count = 0;
-    for (int i = 0; i < len - 1; ++i) {
-        int target = value - arr[i];
-        if (target < arr[i + 1]) {
-            continue;
+    int i = 0;
+    while (i < len - 1) {
+        int curVal = arr[i];
+        int freq = 1;
+        while (i + freq < len && arr[i + freq] == curVal) {
+            ++freq;
         }
-        const int *first = std::lower_bound(arr + i + 1, arr + len, target);
-        if (first == arr + len || *first != target) {
-            continue;
+        int target = value - curVal;
+        if (target == curVal) {
+            // пары внутри группы
+            count += freq * (freq - 1) / 2;
+        } else if (target > curVal) {
+            // ищем target в оставшейся части
+            const int *first = std::lower_bound(arr + i + freq,
+                                                arr + len,
+                                                target);
+            const int *last = std::upper_bound(arr + i + freq,
+                                               arr + len,
+                                               target);
+            count += freq * (last - first);
         }
-        const int *last = first;
-        while (last < arr + len && *last == target) {
-            ++last;
-        }
-        count += (last - first);
+        i += freq;
     }
     return count;
 }
